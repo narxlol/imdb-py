@@ -1,5 +1,4 @@
 import imdb
-import sys
 import consolemenu
 from tabulate import tabulate
 from consolemenu import *
@@ -12,10 +11,19 @@ def search_movie():
     result = pu.input("Enter a movie to search: ")
     pu.println("\nYou entered:", result.input_string, "\n")
     name = result.input_string
-    search = ia.search_movie(name,5)
-    for i in search:
-        print(i)
-    print("")
+    movies = ia.search_movie(name,5)
+    result_list =[]
+    for i in range(0,len(movies)):
+       movie_title = movies[i]['title']
+       movie_id = movies[i].movieID
+       result = [movie_title,movie_id]
+       result_list.append(result)
+       #print(result)
+       
+    #    result_list[i].append(movie_title)
+    #    result_list[i].append(movie_id)
+    headers = ['Movie','ID']
+    print(tabulate(result_list,headers)+"\n")
     pu.enter_to_continue()
 
 def search_actor():
