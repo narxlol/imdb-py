@@ -18,10 +18,7 @@ def search_movie():
        movie_id = movies[i].movieID
        result = [movie_title,movie_id]
        result_list.append(result)
-       #print(result)
-       
-    #    result_list[i].append(movie_title)
-    #    result_list[i].append(movie_id)
+
     headers = ['Movie','ID']
     print(tabulate(result_list,headers)+"\n")
     pu.enter_to_continue()
@@ -30,15 +27,20 @@ def search_actor():
     ia = imdb.Cinemagoer()
     pu = PromptUtils(Screen())
     # PromptUtils.input() returns an InputResult
-    result = pu.input("Enter an actor/actress to search: ")
+    result = pu.input("Enter person to search: ")
     pu.println("\nYou entered:", result.input_string, "\n")
     name = result.input_string
-    search = ia.search_person(name,5)
-    for i in search:
-        print(i)
-    print("")
-    pu.enter_to_continue()
+    persons = ia.search_person(name,5)
+    result_list =[]
+    for i in range(0,len(persons)):
+       person_name = persons[i]['name']
+       person_id = persons[i].personID
+       result = [person_name,person_id]
+       result_list.append(result)
 
+    headers = ['Person','ID']
+    print(tabulate(result_list,headers)+"\n")
+    pu.enter_to_continue()
 # main loop
 def main():
     
