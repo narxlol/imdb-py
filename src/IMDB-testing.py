@@ -32,7 +32,7 @@ while query_active == True:
         
         #print("Title %5")
         #print("%-*s" % search[i]['title'] )
-    headers = ['title','year']
+        headers = ['title','year']
     #print(tabulate(search,headers="keys",tablefmt='fancy_grid'))
     #print(tabulate(search,headers=['title','year'],tablefmt='rst',))
  
