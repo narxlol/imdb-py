@@ -3,15 +3,24 @@ from consolemenu import *
 from consolemenu.items import *
 from tabulate import tabulate
 
-def search_movie():
-    ia = imdb.Cinemagoer()
+def help():
     pu = PromptUtils(Screen())
+    print("\n This is the help menu!")
+    pu.enter_to_continue
+    
+def search_movie():
+   
+    ia = imdb.Cinemagoer()
+    
     # PromptUtils.input() returns an InputResult
-    result = pu.input("Enter a movie to search: ")
+    pu = PromptUtils(Screen())
+    result_list =[]
+    
+    result = pu.input("\nEnter a movie to search: ")
     pu.println("\nResults for", result.input_string, ":\n")
     name = result.input_string
     movies = ia.search_movie(name,10)
-    result_list =[]
+    
     for i in range(0,len(movies)):
        printIndex = i + 1
        movie_title = "%-3d %s" % (printIndex,movies[i]['title'])
@@ -21,6 +30,8 @@ def search_movie():
 
     headers = ['Movie','ID']
     print(tabulate(result_list,headers)+"\n")
+    movie_index = pu.input("\nSelect movie number: ")
+    print("You selected  " + str(result_list[int(str(movie_index.input_string))-1]))
     pu.enter_to_continue()
 
 def search_actor():
@@ -54,11 +65,13 @@ def main():
     # Create the root menu
     menu = ConsoleMenu("IMDB App Menu", "Select option:")
     search_movie_item = FunctionItem("Search a movie", search_movie)
+    help_item = FunctionItem("Search a movie", help)
     search_movie_person_item = FunctionItem("Search a person", search_actor)
     
     # add menu items 
     menu.append_item(search_movie_item)
     menu.append_item(search_movie_person_item)
+    menu.append_item(help_item)
     
     # show the menu
     menu.start()
