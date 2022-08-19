@@ -1,17 +1,16 @@
 import imdb
-import consolemenu
-from tabulate import tabulate
 from consolemenu import *
 from consolemenu.items import *
+from tabulate import tabulate
 
 def search_movie():
     ia = imdb.Cinemagoer()
     pu = PromptUtils(Screen())
     # PromptUtils.input() returns an InputResult
     result = pu.input("Enter a movie to search: ")
-    pu.println("\nYou entered:", result.input_string, "\n")
+    pu.println("\nResults for", result.input_string, ":\n")
     name = result.input_string
-    movies = ia.search_movie(name,5)
+    movies = ia.search_movie(name,10)
     result_list =[]
     for i in range(0,len(movies)):
        movie_title = movies[i]['title']
@@ -28,7 +27,8 @@ def search_actor():
     pu = PromptUtils(Screen())
     # PromptUtils.input() returns an InputResult
     result = pu.input("Enter person to search: ")
-    pu.println("\nYou entered:", result.input_string, "\n")
+    pu.println("\nResults for", result.input_string, ":\n")
+
     name = result.input_string
     persons = ia.search_person(name,5)
     result_list =[]
