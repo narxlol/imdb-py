@@ -6,8 +6,10 @@ from consolemenu.items import *
 from tabulate import tabulate
 
 global movie_selection
-global actor_selection
+global person_selection
 global selection_item
+global desired_results
+
 
 def help():
 
@@ -18,12 +20,24 @@ def help():
 def set_movie(movie_id):
     global movie_selection
     movie_selection = movie_id
-    print("changed movie selection to " + str(movie_selection) + "!\n")
+    #print("changed movie selection to " + str(movie_selection) + "!\n")
+
 
 def get_movie_selection():
-    print("returning movie")
     return_movie = movie_selection[0].split()[2:]
     return str(" ".join(return_movie))
+
+
+def set_person(person_id):
+    global person_selection
+    person_selection = person_id
+    print("changed movie selection to " + str(person_selection) + "!\n")
+
+
+def get_person_selection():
+    return_person = person_selection[0].split()[2:]
+    return str(" ".join(return_person))
+
 
 def search_movie():
 
@@ -51,29 +65,38 @@ def search_movie():
     movie_index = pu.input("\nSelect movie number: ")
     print("\nYou selected  " +
           str(result_list[int(str(movie_index.input_string)) - 1]) + "\n")
-    set_movie(result_list[int(str(movie_index.input_string))-1])
+    set_movie(result_list[int(str(movie_index.input_string)) - 1])
     menu.epilogue_text = "Movie Selected: " + get_movie_selection()
     pu.enter_to_continue()
 
 
 def search_actor():
     ia = imdb.Cinemagoer()
-    pu = PromptUtils(Screen())
-    # PromptUtils.input() returns an InputResult
-    result = pu.input("Enter person to search: ")
-    pu.println("\nResults for", result.input_string, ":\n")
+    num_of_results = 5
 
-    name = result.input_string
-    persons = ia.search_person(name, 5)
+    # PromptUtils.input() returns an InputResult
+    pu = PromptUtils(Screen())
     result_list = []
-    for i in range(0, len(persons)):
-        person_name = persons[i]['name']
-        person_id = persons[i].personID
+
+    result = pu.input("\nEnter an person to search: ")
+    pu.println("\nResults for", result.input_string, ":\n")
+    name = result.input_string
+    person = ia.search_person(name, num_of_results)
+
+    for i in range(0, len(person)):
+        printIndex = i + 1
+        person_name = "%-3d- %s" % (printIndex, person[i]['name'])
+        person_id = person[i].personID
         result = [person_name, person_id]
         result_list.append(result)
 
     headers = ['Person', 'ID']
     print(tabulate(result_list, headers) + "\n")
+    person_index = pu.input("\nSelect person number: ")
+    print("\nYou selected  " +
+          str(result_list[int(str(person_index.input_string)) - 1]) + "\n")
+    set_person(result_list[int(str(person_index.input_string)) - 1])
+    menu.epilogue_text = "Person Selected: " + get_person_selection()
     pu.enter_to_continue()
 
 
@@ -82,13 +105,13 @@ def main():
     # declaring globals
     global menu
     global movie_selection
-    global actor_selection
+    global person_selection
     global selection_item
-    
+
     movie_selection = "N/A"
     actor_selection = "N/A"
     desired_results = 5
-    
+
     # creating instance of IMDb
     ia = imdb.Cinemagoer()
 
