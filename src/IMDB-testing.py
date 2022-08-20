@@ -1,4 +1,3 @@
-from asyncio.windows_events import NULL
 import string
 import imdb
 from consolemenu import *
@@ -39,8 +38,31 @@ def get_person_selection():
     return str(" ".join(return_person))
 
 
-def search_movie():
+def set_results(num_of_results):
+    global desired_results
+    desired_results = num_of_results
 
+
+def set_results_num():
+    global menu
+
+    global submenu_2
+    pu = PromptUtils(Screen())
+    number_of_results = pu.input(
+        "Enter the number of desired search results: ")
+    set_results(number_of_results.input_string)
+    submenu_2.epilogue_text = "\n Changed desired results to " + str(
+        desired_results)
+    pu.enter_to_continue
+    return desired_results
+
+
+def get_results_num():
+    return desired_results
+
+
+def search_movie():
+    global desired_results
     ia = imdb.Cinemagoer()
     num_of_results = 5
 
@@ -51,7 +73,7 @@ def search_movie():
     result = pu.input("\nEnter a movie to search: ")
     pu.println("\nResults for", result.input_string, ":\n")
     name = result.input_string
-    movies = ia.search_movie(name, num_of_results)
+    movies = ia.search_movie(name, desired_results)
 
     for i in range(0, len(movies)):
         printIndex = i + 1
@@ -81,7 +103,7 @@ def search_actor():
     result = pu.input("\nEnter an person to search: ")
     pu.println("\nResults for", result.input_string, ":\n")
     name = result.input_string
-    person = ia.search_person(name, num_of_results)
+    person = ia.search_person(name, desired_results)
 
     for i in range(0, len(person)):
         printIndex = i + 1
@@ -106,10 +128,12 @@ def main():
     global menu
     global movie_selection
     global person_selection
-    global selection_item
+    global submenu_2
+    global desired_results
 
-    movie_selection = "N/A"
-    actor_selection = "N/A"
+    # set initial selection states
+    movie_selection = ""
+    actor_selection = ""
     desired_results = 5
 
     # creating instance of IMDb
@@ -121,10 +145,21 @@ def main():
     help_item = FunctionItem("Help menu", help)
     search_movie_person_item = FunctionItem("Search a person", search_actor)
 
+    # Create a second submenu, but this time use a standard ConsoleMenu instance
+    submenu_2 = ConsoleMenu("Another Submenu Title", "Submenu subtitle.")
+    function_item_2 = FunctionItem("Set result width", set_results_num,
+                                   ["Enter the number of results to show: "])
+    item2 = FunctionItem("Set results width", set_results_num)
+    submenu_2.append_item(function_item_2)
+    submenu_2.append_item(item2)
+    submenu_item_2 = SubmenuItem("Settings", submenu=submenu_2)
+    submenu_item_2.set_menu(menu)
+
     # add menu items
     menu.append_item(search_movie_item)
     menu.append_item(search_movie_person_item)
     menu.append_item(help_item)
+    menu.append_item(submenu_item_2)
 
     # show the menu
     menu.start()
