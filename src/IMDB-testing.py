@@ -1,4 +1,5 @@
 from asyncio.windows_events import NULL
+import string
 import imdb
 from consolemenu import *
 from consolemenu.items import *
@@ -7,6 +8,7 @@ from tabulate import tabulate
 global movie_selection
 global actor_selection
 global selection_item
+
 def help():
 
     print("\nThis is the help menu!")
@@ -19,7 +21,9 @@ def set_movie(movie_id):
     print("changed movie selection to " + str(movie_selection) + "!\n")
 
 def get_movie_selection():
-    return str(movie_selection)
+    print("returning movie")
+    return_movie = movie_selection[0].split()[2:]
+    return str(" ".join(return_movie))
 
 def search_movie():
 
@@ -37,7 +41,7 @@ def search_movie():
 
     for i in range(0, len(movies)):
         printIndex = i + 1
-        movie_title = "%-3d %s" % (printIndex, movies[i]['title'])
+        movie_title = "%-3d- %s" % (printIndex, movies[i]['title'])
         movie_id = movies[i].movieID
         result = [movie_title, movie_id]
         result_list.append(result)
@@ -48,9 +52,7 @@ def search_movie():
     print("\nYou selected  " +
           str(result_list[int(str(movie_index.input_string)) - 1]) + "\n")
     set_movie(result_list[int(str(movie_index.input_string))-1])
-    selection_item = MenuItem(str(result_list[int(str(movie_index.input_string))-1]))
     menu.epilogue_text = "Movie Selected: " + get_movie_selection()
-    print("movie selection: " + str(movie_selection))
     pu.enter_to_continue()
 
 
@@ -77,16 +79,18 @@ def search_actor():
 
 # main loop
 def main():
+    # declaring globals
     global menu
     global movie_selection
     global actor_selection
     global selection_item
-    selection_item = MenuItem("(Nothing selected)")
+    
     movie_selection = "N/A"
+    actor_selection = "N/A"
+    desired_results = 5
+    
     # creating instance of IMDb
     ia = imdb.Cinemagoer()
-    query_active = True
-    desired_results = 5
 
     # Create the root menu
     menu = ConsoleMenu("IMDB App Menu", "Select option:")
@@ -97,7 +101,6 @@ def main():
     # add menu items
     menu.append_item(search_movie_item)
     menu.append_item(search_movie_person_item)
-    #menu.(selection_item)
     menu.append_item(help_item)
 
     # show the menu
