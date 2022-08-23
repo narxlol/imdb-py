@@ -19,7 +19,7 @@ def help():
 def set_movie(movie_id):
     global movie_selection
     movie_selection = movie_id
-    #print("changed movie selection to " + str(movie_selection) + "!\n")
+    print("changed movie selection to " + str(movie_selection) + "!\n")
 
 
 def get_movie_selection():
@@ -89,6 +89,7 @@ def search_movie():
           str(result_list[int(str(movie_index.input_string)) - 1]) + "\n")
     set_movie(result_list[int(str(movie_index.input_string)) - 1])
     menu.epilogue_text = "Movie Selected: " + get_movie_selection()
+    menu.epilogue_text += " (" + str(movie_selection[1]) + ")"
     pu.enter_to_continue()
 
 
@@ -146,11 +147,8 @@ def main():
     search_movie_person_item = FunctionItem("Search a person", search_actor)
 
     # Create a second submenu, but this time use a standard ConsoleMenu instance
-    submenu_2 = ConsoleMenu("Another Submenu Title", "Submenu subtitle.")
-    function_item_2 = FunctionItem("Set result width", set_results_num,
-                                   ["Enter the number of results to show: "])
+    submenu_2 = ConsoleMenu("Settings Menue", "Select a setting to change.")
     item2 = FunctionItem("Set results width", set_results_num)
-    submenu_2.append_item(function_item_2)
     submenu_2.append_item(item2)
     submenu_item_2 = SubmenuItem("Settings", submenu=submenu_2)
     submenu_item_2.set_menu(menu)
