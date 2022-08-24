@@ -62,6 +62,7 @@ def get_results_num():
 
 
 def search_movie():
+    global ia
     global desired_results
     ia = imdb.Cinemagoer()
     num_of_results = 5
@@ -90,6 +91,11 @@ def search_movie():
     set_movie(result_list[int(str(movie_index.input_string)) - 1])
     menu.epilogue_text = "Movie Selected: " + get_movie_selection()
     menu.epilogue_text += " (" + str(movie_selection[1]) + ")"
+    print( ia.get_movie_infoset())
+    print(movie_selection[1])
+    ia.get_movie(movie_selection[1])
+    query = pu.input("entery a query: ")
+    print(query.input_string)
     pu.enter_to_continue()
 
 
@@ -131,6 +137,7 @@ def main():
     global person_selection
     global submenu_2
     global desired_results
+    global ia
 
     # set initial selection states
     movie_selection = ""
