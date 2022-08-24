@@ -141,7 +141,7 @@ def main():
     ia = imdb.Cinemagoer()
 
     # Create the root menu
-    menu = ConsoleMenu("IMDB App Menu", "Select option:")
+    menu = ConsoleMenu("IMDB App Menu", "Select an5 option:")
     search_movie_item = FunctionItem("Search a movie", search_movie)
     help_item = FunctionItem("Help menu", help)
     search_movie_person_item = FunctionItem("Search a person", search_actor)
@@ -162,7 +162,11 @@ def main():
     # show the menu
     menu.start()
     menu.join()
+    
+    pu = PromptUtils(Screen())
+    
 
+    result = pu.input("\nEnter an person to search: ")
 
 if __name__ == "__main__":
     main()
