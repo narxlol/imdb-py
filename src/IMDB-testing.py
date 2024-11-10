@@ -60,6 +60,14 @@ def set_results_num():
 def get_results_num():
     return desired_results
 
+def get_cast(movie):
+    cast = movie.get("cast")
+    cast_list = []
+    for member in cast:
+        cast_list.append(member)
+    
+    return cast_list
+    
 
 def search_movie():
     global ia
@@ -86,18 +94,55 @@ def search_movie():
     headers = ['Movie', 'ID']
     print(tabulate(result_list, headers) + "\n")
     movie_index = pu.input("\nSelect movie number: ")
-    print("\nYou selected  " +
-          str(result_list[int(str(movie_index.input_string)) - 1]) + "\n")
+    # print("\nYou selected  " +
+    #       str(result_list[int(str(movie_index.input_string)) - 1]) + "\n")
     set_movie(result_list[int(str(movie_index.input_string)) - 1])
     menu.epilogue_text = "Movie Selected: " + get_movie_selection()
     menu.epilogue_text += " (" + str(movie_selection[1]) + ")"
-    print( ia.get_movie_infoset())
     print(movie_selection[1])
-    ia.get_movie(movie_selection[1])
-    query = pu.input("entery a query: ")
-    print(query.input_string)
+    movie = ia.get_movie(movie_selection[1])
+    print(tabulate(movie.infoset2keys))
+    
+    query = ""
+    while query != "q":
+        query = pu.input("entery a query: ").input_string
+ 
+        if query == "q":
+            break
+    
+        query1 =  query
+        print(query1)
+        
+        results = movie.get(query1)
+        print(type(results))
+        print(movie.keys())
+        for person in results:
+            
+            print (person)
+            
+        print("\n")
+    
+    print(get_cast(movie))
     pu.enter_to_continue()
 
+
+
+def get_person_list(person_list):
+    result_list = []
+    for person in person_list:
+        person_name = person[0]
+        person_id = person[1]
+        
+    result = [person_name, person_id]
+    # for i in range(0, len(person_list)):
+    #     printIndex = i + 1
+    #     person_name = "%-3d- %s" % (printIndex, person_list[i]['name'])
+    #     person_id = person[i].personID
+    #     result = [person_name, person_id]
+    #     result_list.append(result)
+    #     headers = ['Person', 'ID']
+    #     print(tabulate(result_list, headers) + "\n")
+    
 
 def search_actor():
     ia = imdb.Cinemagoer()
@@ -148,7 +193,7 @@ def main():
     ia = imdb.Cinemagoer()
 
     # Create the root menu
-    menu = ConsoleMenu("IMDB App Menu", "Select an5 option:")
+    menu = ConsoleMenu("IMDB App Menu", "Select an option:")
     search_movie_item = FunctionItem("Search a movie", search_movie)
     help_item = FunctionItem("Help menu", help)
     search_movie_person_item = FunctionItem("Search a person", search_actor)
@@ -173,7 +218,6 @@ def main():
     pu = PromptUtils(Screen())
     
 
-    result = pu.input("\nEnter an person to search: ")
 
 if __name__ == "__main__":
     main()
