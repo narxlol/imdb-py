@@ -3,6 +3,8 @@ import imdb
 from consolemenu import *
 from consolemenu.items import *
 from tabulate import tabulate
+from pprint import pprint
+import textwrap
 
 global movie_selection
 global person_selection
@@ -64,8 +66,13 @@ def get_cast(movie):
     cast = movie.get("cast")
     cast_list = []
     for member in cast:
-        cast_list.append(member)
+        name = member.get('name')
+        role = member.currentRole
+        cast_list.append([name, role])
     
+    headers = ['Actor', 'Role']
+    print("\nCast:")
+    print(tabulate(cast_list, headers, tablefmt="grid"))
     return cast_list
     
 
@@ -101,24 +108,33 @@ def search_movie():
     menu.epilogue_text += " (" + str(movie_selection[1]) + ")"
     print(movie_selection[1])
     movie = ia.get_movie(movie_selection[1])
-    print(tabulate(movie.infoset2keys))
+    print("\nAvailable movie information fields:")
+    info_keys = sorted(movie.keys())
+    wrapped_keys = [textwrap.fill(k, width=40) for k in info_keys]
+    print(tabulate([wrapped_keys[i:i+4] for i in range(0, len(wrapped_keys), 4)], 
+                   tablefmt="grid"))
     
     query = ""
     while query != "q":
-        query = pu.input("entery a query: ").input_string
+        query = pu.input("\nEnter field to query (q to quit): ").input_string
  
         if query == "q":
             break
-    
-        query1 =  query
-        print(query1)
         
-        results = movie.get(query1)
-        print(type(results))
-        print(movie.keys())
-        for person in results:
+        if query not in movie.keys():
+            print(f"\nError: '{query}' is not a valid field")
+            continue
             
-            print (person)
+        results = movie.get(query)
+        print(f"\nResults for '{query}':")
+        
+        if isinstance(results, (list, tuple)):
+            if all(isinstance(x, (str, int, float)) for x in results):
+                print(tabulate([[x] for x in results], tablefmt="grid"))
+            else:
+                pprint(results, width=80, indent=2)
+        else:
+            print(textwrap.fill(str(results), width=80))
             
         print("\n")
     
